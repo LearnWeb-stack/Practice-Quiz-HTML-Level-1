@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Fundamentals Quiz - 50 Questions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e8e8e8;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .container {
+            width: 100%;
+            min-height: 100vh;
+            background: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+        }
+
+        .quiz-content {
+            flex: 1;
+            padding: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .progress-bar {
+            background: #ddd;
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: #007bff;
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.3s ease;
+            width: 2%;
+        }
+
+        .question-number {
+            color: #007bff;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 25px;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .options-container {
+            margin-bottom: 20px;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 18px 20px;
+            margin: 12px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+
+        .option:hover:not(.disabled) {
+            border-color: #007bff;
+            background: #f8f9ff;
+        }
+
+        .option.selected {
+            border-color: #007bff;
+            background: #007bff;
+            color: white;
+        }
+
+        .option.correct {
+            border-color: #28a745 !important;
+            background: #28a745 !important;
+            color: white !important;
+        }
+
+        .option.incorrect {
+            border-color: #dc3545 !important;
+            background: #dc3545 !important;
+            color: white !important;
+        }
+
+        .option.disabled {
+            pointer-events: none;
+        }
+
+        .feedback {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 5px solid #007bff;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback.correct {
+            border-left-color: #28a745;
+            background: #f8fff8;
+        }
+
+        .feedback.incorrect {
+            border-left-color: #dc3545;
+            background: #fff8f8;
+        }
+
+        .feedback-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .feedback-item {
+            margin: 10px 0;
+            padding: 8px 0;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .controls {
+            margin-top: 40px;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #0056b3;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #545b62;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .results {
+            text-align: center;
+            display: none;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .score {
+            font-size: 3rem;
+            color: #007bff;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .score-message {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .score-breakdown {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 25px 0;
+            text-align: left;
+        }
+
+        .score-breakdown h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .quiz-content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>HTML Fundamentals Quiz</h1>
+            <p>Complete Assessment with Detailed Feedback - 50 Questions</p>
+        </div>
+        
+        <div class="quiz-content">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+
+            <div id="questionContainer">
+                <div class="question-number" id="questionNumber"></div>
+                <div class="question-text" id="questionText"></div>
+                <div class="options-container" id="optionsContainer"></div>
+                <div class="feedback" id="feedback">
+                    <div class="feedback-title" id="feedbackTitle"></div>
+                    <div id="feedbackContent"></div>
+                </div>
+            </div>
+
+            <div class="results" id="results">
+                <div class="score" id="finalScore"></div>
+                <div class="score-message" id="scoreMessage"></div>
+                <div class="score-breakdown" id="scoreBreakdown"></div>
+                <button class="btn btn-primary" onclick="restartQuiz()">Retake Quiz</button>
+            </div>
+
+            <div class="controls" id="controls">
+                <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()">Previous</button>
+                <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // All 50 questions with complete detailed feedback from PDF
+        const allQuestions = [
+            {
+                question: "What does HTML stand for?",
+                options: ["HyperText Markup Language", "High Tech Modern Language", "HyperText Modern Language", "High Text Markup Language"],
+                correct: 0,
+                feedback: {
+                    A: "✓ Correct - HTML stands for HyperText Markup Language, emphasizing hypertext (interconnected documents) and markup (structural tags).",
+                    B: "✗ Incorrect - This is not the correct expansion of the HTML acronym.",
+                    C: "✗ Incorrect - While it includes \"HyperText,\" the \"M\" stands for \"Markup,\" not \"Modern.\"",
+                    D: "✗ Incorrect - The \"H\" stands for \"HyperText,\" not \"High Text.\""
+                }
+            },
+            {
+                question: "Which of the following is NOT a required part of a minimal HTML document structure?",
+                options: ["<!DOCTYPE html> declaration", "<html> element", "<head> element", "<meta charset> element"],
+                correct: 4,
+                feedback: {
+                    A: "✗ Incorrect - The DOCTYPE declaration is required to instruct the browser about the document type.",
+                    B: "✗ Incorrect - The <html> element is required as it encloses the entire document.",
+                    C: "✗ Incorrect - The <head> element is required as it contains metadata/information for the document",
+                    D: "✓ Correct - The <meta charset> element is not strictly required for the document to be valid and display content."
+                }
+            },
+            {
+                question: "What is a void element in HTML?",
+                options: ["An element that contains no content", "An element that only needs an opening tag", "An element that is invisible on the webpage", "An element that has been deprecated"],
+                correct: 1,
+                feedback: {
+                    A: "✗ Incorrect - Some non-void elements can also be empty but still need closing tags.",
+                    B: "✓ Correct - Void elements like <br>, <img>, and <meta> only require an opening tag.",
+                    C: "✗ Incorrect - Visibility is not related to whether an element is void.",
+                    D: "✗ Incorrect - Deprecation status is unrelated to void elements."
+                }
+            },
+            {
+                question: "Which element is used to create a line break within a paragraph?",
+                options: ["<break>", "<newline>", "<br>", "<lb>"],
+                correct: 2,
+                feedback: {
+                    A: "✗ Incorrect - <break> is not a valid HTML element.",
+                    B: "✗ Incorrect - <newline> is not a valid HTML element.",
+                    C: "✓ Correct - The <br> element creates a line break and is a void element.",
+                    D: "✗ Incorrect - <lb> is not a valid HTML element."
+                }
+            },
+            {
+                question: "What is the correct way to create a table header cell?",
+                options: ["<header>Content</header>", "<th>Content</th>", "<td header>Content</td>", "<thead>Content</thead>"],
+                correct: 1,
+                feedback: {
+                    A: "✗ Incorrect - <header> is a semantic element, not for table headers.",
+                    B: "✓ Correct - <th> creates table header cells, typically displayed bold and centered.",
+                    C: "✗ Incorrect - <td> creates data cells; adding \"header\" as an attribute doesn't make it a header.",
+                    D: "✗ Incorrect - <thead> groups header content but doesn't create individual header cells."
+                }
+            },
+            {
+                question: "Which attributes are required for the <img> element?",
+                options: ["width and height", "src and alt", "title and alt", "src and title"],
+                correct: 1,
+                feedback: {
+                    A: "✗ Incorrect - Width and height are optional attributes for sizing.",
+                    B: "✓ Correct - src specifies the image URL, and alt provides alternative text for accessibility.",
+                    C: "✗ Incorrect - title is optional; alt is required but src is also necessary.",
+                    D: "✗ Incorrect - title is optional; alt is required for accessibility compliance."
+                }
+            },
+            {
+                question: "What does the colspan attribute do in HTML tables?",
+                options: ["Makes a cell span multiple rows", "Makes a cell span multiple columns", "Sets the column width", "Sets the column alignment"],
+                correct: 1,
+                feedback: {
+                    A: "✗ Incorrect - That's what rowspan does.",
+                    B: "✓ Correct - colspan allows a cell to span across multiple columns horizontally.",
+                    C: "✗ Incorrect - Column width is controlled by CSS, not colspan.",
+                    D: "✗ Incorrect - Column alignment is controlled by CSS or the align attribute."
+                }
+            },
+            {
+                question: "Which HTML element is used to create an unordered list?",
+                options: ["<ol>", "<list>", "<ul>", "<ulist>"],
+                correct: 2,
+                feedback: {
+                    A: "✗ Incorrect - <ol> creates ordered (numbered) lists.",
+                    B: "✗ Incorrect - <list> is not a valid HTML element.",
+                    C: "✓ Correct - <ul> creates unordered lists with bullet points.",
+                    D: "✗ Incorrect - <ulist> is not a valid HTML element."
+                }
+            },
+            {
+                question: "What is the purpose of the alt attribute in an <img> element?",
+                options: ["To specify the image size", "To provide alternative text when the image cannot be displayed", "To create a link from the image", "To set the image alignment"],
+                correct: 1,
+                feedback: {
+                    A: "✗ Incorrect - Image size is controlled by width and height attributes.",
+                    B: "✓ Correct - The alt attribute provides accessibility and fallback text for images.",
+                    C: "✗ Incorrect - Links are created using the <a> element around the image.",
+                    D: "✗ Incorrect - Image alignment is controlled by CSS."
+                }
+            },
+            {
+                question: "Which of the following creates a hyperlink to an email address?",
+                options: ['<a href="email:john@example.com">Email John</a>', '<a href="mail:john@example.com">Email John</a>', '<a href="mailto:john@example.com">Email John</a>', '<a href="send:john@example.com">Email John</a>'],
+                correct: 2,
+                feedback: {
+                    A: "✗ Incorrect - \"email:\" is not a valid URL scheme.",
+                    B: "✗ Incorrect - \"mail:\" is not the correct URL scheme for email.",
+                    C: "✓ Correct - The \"mailto:\" scheme opens the default email client.",
+                    D: "✗ Incorrect - \"send:\" is not a valid URL scheme."
+                }
+            },
+            {
+                question: 'What does the target="_blank" attribute do in a hyperlink?',
+                options: ["Opens the link in the same window", "Opens the link in a new tab or window", "Makes the link inactive", "Changes the link color"],
+                correct: 1,
+                feedback: {
+                    A: "✗ Incorrect - That's the default behavior or target=\"_self\".",
+                    B: "✓ Correct - target=\"_blank\" opens links in new tabs/windows.",
+                    C: "✗ Incorrect - This doesn't affect link functionality.",
+                    D: "✗ Incorrect - Link color is controlled by CSS, not the target attribute."
+                }
+            },
+            {
+                question: "Which element is used to define emphasized text that is typically displayed in italics?",
+                options: ["<i>", "<italic>", "<em>", "<emphasis>"],
+                correct: 2,
+                feedback: {
+                    A: "✗ Incorrect - <i> is for alternate voice/mood, not semantic emphasis.",
+                    B: "✗ Incorrect - <italic> is not a valid HTML element.",
+                    C: "✓ Correct - <em> provides semantic emphasis, typically rendered in italics.",
+                    D: "✗ Incorrect - <emphasis> is not a valid HTML element."
+                }
+            },
+            {
+                question: "What is the correct HTML entity for displaying the copyright symbol (©)?",
+                options: ["&copy;", "&copyright;", "&#copy;", "&cp;"],
+                correct: 0,
+                feedback: {
+                    A: "✓ Correct - &copy; is the named entity for the copyright symbol.",
+                    B: "✗ Incorrect - &copyright; is not a valid HTML entity name.",
+                    C: "✗ Incorrect - This mixes named and numeric entity syntax incorrectly.",
+                    D: "✗ Incorrect - &cp; is not a valid HTML entity name."
+                }
+            },
+            {
+                question: "Which element should be used to create a table caption?",
+                options: ["<title>", "<caption>", "<header>", "<th>"],
+                correct: 1,
+                feedback: {
+                    A: "✗ Incorrect - <title> sets the document title in the browser tab.",
+                    B: "✓ Correct - <caption> provides a descriptive title for tables.",
+                    C: "✗ Incorrect - <header> is a semantic sectioning element, not for table captions.",
+                    D: "✗ Incorrect - <th> creates header cells within table rows."
+                }
+            },
+            {
+                question: "What is the purpose of the id attribute in HTML?",
+                options: ["To specify the element type", "To create a unique identifier for an element", "To set the element's style", "To make the element invisible"],
+                correct: 1,
+                feedback: {
+                    A: "✗ Incorrect - Element type is specified by the tag name itself.",
+                    B: "✓ Correct - The id attribute creates unique identifiers for linking and scripting.",
+                    C: "✗ Incorrect - Styling is typically done with CSS, though id can be used as a CSS selector.",
+                    D: "✗ Incorrect - Visibility is controlled by CSS, not the id attribute."
+                }
+            },
+            {
+                question: "Which of the following is the correct way to create an HTML comment?",
+                options: ["// This is a comment", "/* This is a comment */", "<!-- This is a comment -->", "<comment>This is a comment</comment>"],
+                correct: 2,
+                feedback: {
+                    A: "✗ Incorrect - This is JavaScript/C++ style commenting.",
+                    B: "✗ Incorrect - This is CSS/JavaScript block comment syntax.",
+                    C: "✓ Correct - HTML comments use <!-- --> syntax.",
+                    D: "✗ Incorrect - <comment> is not a valid HTML element."
+                }
+            },
+            {
+                question: "What does &nbsp; represent in HTML?",
+                options: ["A line break", "A non-breaking space", "A paragraph break", "A tab character"],
+                correct: 1,
+                feedback: {
+                    A: "✗ Incorrect - Line breaks are created with <br> elements.",
+                    B: "✓ Correct - &nbsp; creates a space that prevents line wrapping at that point.",
+                    C: "✗ Incorrect - Paragraph breaks are created with <p> elements.",
+                    D: "✗ Incorrect - There's no standard HTML entity for tab characters."
+                }
+            },
+            {
+                question: "Which image format is best for photographs?",
+                options: ["PNG", "GIF", "JPEG", "SVG"],
+                correct: 2,
+                feedback: {
+                    A: "✗ Incorrect - PNG is better for graphics with few colors or transparency.",
+                    B: "✗ Incorrect - GIF is limited to 256 colors and better for simple animations.",
+                    C: "✓ Correct - JPEG uses lossy compression ideal for photographs with many colors.",
+                    D: "✗ Incorrect - SVG is vector-based, not suitable for photographic images."
+                }
+            },
+            {
+                question: "What happens when you specify both width and height attributes for an image, but they don't match the image's aspect ratio?",
+                options: ["The browser ignores the attributes", "The browser displays an error", "The browser distorts the image to match the specified dimensions", "The browser maintains the original aspect ratio"],
+                correct: 2,
+                feedback: {
+                    A: "✗ Incorrect - Browsers respect the specified dimensions.",
+                    B: "✗ Incorrect - No error is displayed; the image is simply resized.",
+                    C: "✓ Correct - The browser will stretch or compress the image to fit the specified dimensions.",
+                    D: "✗ Incorrect - This only happens when you specify width OR height, not both."
+                }
+            },
+            {
+                question: "Which element is used to group table header content?",
+                options: ["<header>", "<thead>", "<th-group>", "<table-head>"],
+                correct: 1,
+                feedback: {
+                    A: "✗ Incorrect - <header> is a semantic element for page/section headers, not table headers.",
+                    B: "✓ Correct - <thead> groups the header rows of a table.",
+                    C: "✗ Incorrect - <th-group> is not a valid HTML element.",
+                    D: "✗ Incorrect - <table-head> is not a valid HTML element."
+                }
+            },
+            {
+                question: "Which HTML element indicates text that has strong importance and is typically displayed in bold?",
+                options: ["<b>", "<bold>", "<strong>", "<important>"],
+                correct: 2,
+                feedback: {
+                    A: "✗ Incorrect - <b> is for stylistic bold text without semantic meaning.",
+                    B: "✗ Incorrect - <bold> is not a valid HTML element.",
+                    C: "✓ Correct - <strong> indicates semantic importance and is typically rendered bold.",
+                    D: "✗ Incorrect - <important> is not a valid HTML element."
+                }
+            },
+            {
+                question: "What is the correct HTML structure for a nested list?",
+                options: ["Put the nested list inside a <li> element", "Put the nested list after the closing </ul> tag", "Put the nested list before the opening <ul> tag", "Nested lists are not allowed in HTML"],
+                correct: 0,
+                feedback: {
+                    A: "✓ Correct - Nested lists must be placed inside <li> elements for valid HTML.",
+                    B: "✗ Incorrect - This would create separate lists, not nested ones.",
+                    C: "✗ Incorrect - This would also create separate lists.",
+                    D: "✗ Incorrect - Nested lists are perfectly valid and commonly used in HTML."
+                }
+            },
+            {
+                question: "Which URL scheme is used for transferring files with File Transfer Protocol?",
+                options: ["http://", "ftp://", "file://", "transfer://"],
+                correct: 1,
+                feedback: {
+                    A: "✗ Incorrect - http:// is for web pages, not file transfer.",
+                    B: "✓ Correct - ftp:// is the URL scheme for File Transfer Protocol.",
+                    C: "✗ Incorrect - file:// is for local files on the same computer.",
+                    D: "✗ Incorrect - transfer:// is not a standard URL scheme."
+                }
+            },
+            {
+                question: "What does the rowspan attribute do in HTML tables?",
+                options: ["Sets the width of a row", "Makes a cell span multiple columns", "Makes a cell span multiple rows", "Sets the height of a row"],
+                correct: 2,
+                feedback: {
+                    A: "✗ Incorrect - Row width is controlled by CSS or column widths.",
+                    B: "✗ Incorrect - That's what colspan does.",
+                    C: "✓ Correct - rowspan allows a cell to span vertically across multiple rows.",
+                    D: "✗ Incorrect - Row height is controlled by CSS or content size."
+                }
+            },
+            {
+                question: "Which character encoding is commonly specified in the <meta charset> tag?",
+                options: ["ASCII", "ISO-8859-1", "UTF-8", "Windows-1252"],
+                correct: 2,
+                feedback: {
+                    A: "✗ Incorrect - ASCII is limited and doesn't support international characters well.",
+                    B: "✗ Incorrect - ISO-8859-1 is older and has limited character support.",
+                    C: "✓ Correct - UTF-8 supports all world languages and is the recommended encoding.",
+                    D: "✗ Incorrect - Windows-1252 is a legacy encoding with limited character support."
+                }
+            },
+            {
+                question: "What is the purpose of the lang attribute in the <html> element?",
+                options: ["To set the programming language", "To specify the document's human language", "To define the markup language version", "To set the character encoding"],
+                correct: 1,
+                feedback: {
+                    A: "✗ Incorrect - Programming languages are not specified in HTML attributes.",
+                    B: "✓ Correct - The lang attribute helps browsers and assistive technology understand the document's language.",
+                    C: "✗ Incorrect - Markup language version is specified by the DOCTYPE.",
+                    D: "✗ Incorrect - Character encoding is specified by the <meta charset> tag."
+                }
+            },
+            {
+                question: "Which element is used to create a definition list?",
+                options: ["<dl>", "<def>", "<definition>", "<dlist>"],
+                correct: 0,
+                feedback: {
+                    A: "✓ Correct - <dl> creates definition lists with <dt> terms and <dd> descriptions.",
+                    B: "✗ Incorrect - <def> is not a valid HTML element.",
+                    C: "✗ Incorrect - <definition> is not a valid HTML element.",
+                    D: "✗ Incorrect - <dlist> is not a valid HTML element."
+                }
+            },
+            {
+                question: "What happens to multiple consecutive whitespace characters in HTML?",
+                options: ["They are preserved exactly as typed", "They are converted to a single space", "They cause a validation error", "They are ignored completely"],
+                correct: 1,
+                feedback: {
+                    A: "✗ Incorrect - HTML collapses whitespace by default.",
+                    B: "✓ Correct - Browsers treat multiple spaces, tabs, and newlines as a single space.",
+                    C: "✗ Incorrect - Multiple whitespace characters don't cause validation errors.",
+                    D: "✗ Incorrect - They're converted to a single space, not completely ignored."
+                }
+            },
+            {
+                question: "Which attribute can be used to make table headers more accessible to screen readers?",
+                options: ["accessible", "reader", "scope", "aria"],
+                correct: 2,
+                feedback: {
+                    A: "✗ Incorrect - accessible is not a valid HTML attribute.",
+                    B: "✗ Incorrect - reader is not a valid HTML attribute.",
+                    C: "✓ Correct - The scope attribute indicates whether a header applies to a row or column.",
+                    D: "✗ Incorrect - While ARIA attributes exist, aria alone is not the specific answer here."
+                }
+            },
+            {
+                question: "What is the correct way to create a relative URL to a file in the parent directory?",
+                options: ["../filename.html", "./filename.html", "parent/filename.html", "/filename.html"],
+                correct: 0,
+                feedback: {
+                    A: "✓ Correct - ../ navigates to the parent directory in relative URLs.",
+                    B: "✗ Incorrect - ./ refers to the current directory.",
+                    C: "✗ Incorrect - This looks for a subdirectory named \"parent.\"",
+                    D: "✗ Incorrect - This is an absolute URL from the server root."
+                }
+            },
+            {
+                question: "Which image format supports transparency and is best for line art?",
+                options: ["JPEG", "PNG", "GIF", "BMP"],
+                correct: 1,
+                feedback: {
+                    A: "✗ Incorrect - JPEG doesn't support transparency and uses lossy compression.",
+                    B: "✓ Correct - PNG supports transparency and uses lossless compression ideal for line art.",
+                    C: "✗ Incorrect - While GIF supports transparency, it's limited to 256 colors.",
+                    D: "✗ Incorrect - BMP doesn't typically support transparency and creates large files."
+                }
+            },
+            {
+                question: "What does the <cite> element represent?",
+                options: ["A code citation", "A court citation", "The title of a work", "An important quote"],
+                correct: 2,
+                feedback: {
+                    A: "✗ Incorrect - Code citations aren't specifically what <cite> represents.",
+                    B: "✗ Incorrect - While court citations are titles of works, this is too specific.",
+                    C: "✓ Correct - <cite> represents the title of books, movies, songs, etc.",
+                    D: "✗ Incorrect - Important quotes would use <blockquote> or <q>."
+                }
+            },
+            {
+                question: "Which HTML entity represents the less-than symbol (<)?",
+                options: ["&less;", "&lt;", "&#less;", "&<;"],
+                correct: 1,
+                feedback: {
+                    A: "✗ Incorrect - &less; is not a valid HTML entity name.",
+                    B: "✓ Correct - &lt; stands for \"less than\" and represents the < symbol.",
+                    C: "✗ Incorrect - This mixes named and numeric entity syntax incorrectly.",
+                    D: "✗ Incorrect - &<; is not valid syntax."
+                }
+            },
+            {
+                question: "What is the maximum number of colors that GIF images can display?",
+                options: ["16 colors", "256 colors", "16 million colors", "Unlimited colors"],
+                correct: 1,
+                feedback: {
+                    A: "✗ Incorrect - GIF can display more than 16 colors.",
+                    B: "✓ Correct - GIF uses 8-bit color, allowing a maximum of 256 colors.",
+                    C: "✗ Incorrect - 16 million colors (24-bit) is supported by JPEG and PNG.",
+                    D: "✗ Incorrect - GIF has a specific color limitation."
+                }
+            },
+            {
+                question: "Which element creates a table row?",
+                options: ["<row>", "<tr>", "<table-row>", "<trow>"],
+                correct: 1,
+                feedback: {
+                    A: "✗ Incorrect - <row> is not a valid HTML element.",
+                    B: "✓ Correct - <tr> stands for \"table row\" and creates table rows.",
+                    C: "✗ Incorrect - <table-row> is not a valid HTML element.",
+                    D: "✗ Incorrect - <trow> is not a valid HTML element."
+                }
+            },
+            {
+                question: "What is the purpose of the href attribute in an anchor element?",
+                options: ["To specify the link text", "To specify the link destination", "To specify the link color", "To specify the link size"],
+                correct: 1,
+                feedback: {
+                    A: "✗ Incorrect - Link text goes between the opening and closing <a> tags.",
+                    B: "✓ Correct - The href attribute specifies where the link should navigate.",
+                    C: "✗ Incorrect - Link color is controlled by CSS.",
+                    D: "✗ Incorrect - Link size is controlled by CSS."
+                }
+            },
+            {
+                question: "Which element is used to mark text that should be highlighted?",
+                options: ["<highlight>", "<mark>", "<yellow>", "<em>"],
+                correct: 1,
+                feedback: {
+                    A: "✗ Incorrect - <highlight> is not a valid HTML element.",
+                    B: "✓ Correct - <mark> highlights text with a yellow background by default.",
+                    C: "✗ Incorrect - <yellow> is not a valid HTML element.",
+                    D: "✗ Incorrect - <em> is for emphasis, not highlighting."
+                }
+            },
+            {
+                question: "What does the DOCTYPE declaration do?",
+                options: ["Declares the document type to the browser", "Sets the character encoding", "Defines the page title", "Specifies the CSS version"],
+                correct: 0,
+                feedback: {
+                    A: "✓ Correct - DOCTYPE tells the browser which version of HTML to expect.",
+                    B: "✗ Incorrect - Character encoding is set by the <meta charset> tag.",
+                    C: "✗ Incorrect - Page title is set by the <title> element.",
+                    D: "✗ Incorrect - CSS version is not specified in HTML documents."
+                }
+            },
+            {
+                question: "Which element is used to create a table body section?",
+                options: ["<body>", "<table-body>", "<tbody>", "<tb>"],
+                correct: 2,
+                feedback: {
+                    A: "✗ Incorrect - <body> is for the document body, not table body.",
+                    B: "✗ Incorrect - <table-body> is not a valid HTML element.",
+                    C: "✓ Correct - <tbody> groups the main content rows of a table.",
+                    D: "✗ Incorrect - <tb> is not a valid HTML element."
+                }
+            },
+            {
+                question: "What happens when you omit the DOCTYPE declaration from an HTML document?",
+                options: ["The document won't load", "The browser renders in quirks mode", "The document becomes invalid", "Nothing changes"],
+                correct: 1,
+                feedback: {
+                    A: "✗ Incorrect - The document will still load and display.",
+                    B: "✓ Correct - Without DOCTYPE, browsers use quirks mode with older rendering rules.",
+                    C: "✗ Incorrect - While technically invalid, it doesn't prevent rendering.",
+                    D: "✗ Incorrect - The rendering mode definitely changes."
+                }
+            },
+            {
+                question: "Which type attribute value creates lowercase Roman numerals in an ordered list?",
+                options: ['type="i"', 'type="roman"', 'type="lower-roman"', 'type="lr"'],
+                correct: 0,
+                feedback: {
+                    A: "✓ Correct - type=\"i\" creates lowercase Roman numerals (i, ii, iii, iv...).",
+                    B: "✗ Incorrect - type=\"roman\" is not a valid value.",
+                    C: "✗ Incorrect - type=\"lower-roman\" is CSS, not HTML attribute syntax.",
+                    D: "✗ Incorrect - type=\"lr\" is not a valid value."
+                }
+            },
+            {
+                question: "What is the correct way to specify a fragment identifier in a URL?",
+                options: ["page.html?section1", "page.html&section1", "page.html#section1", "page.html@section1"],
+                correct: 2,
+                feedback: {
+                    A: "✗ Incorrect - The ? symbol is used for query parameters, not fragments.",
+                    B: "✗ Incorrect - The & symbol separates multiple query parameters.",
+                    C: "✓ Correct - The # symbol indicates a fragment identifier for linking to page sections.",
+                    D: "✗ Incorrect - The @ symbol is not used for fragment identifiers."
+                }
+            },
+            {
+                question: "Which element creates a table footer section?",
+                options: ["<footer>", "<table-footer>", "<tfoot>", "<tf>"],
+                correct: 2,
+                feedback: {
+                    A: "✗ Incorrect - <footer> is for document/section footers, not table footers.",
+                    B: "✗ Incorrect - <table-footer> is not a valid HTML element.",
+                    C: "✓ Correct - <tfoot> groups the footer rows of a table.",
+                    D: "✗ Incorrect - <tf> is not a valid HTML element."
+                }
+            },
+            {
+                question: "What does the <kbd> element represent?",
+                options: ["Keyboard shortcuts", "Keyboard input", "Computer code", "Bold text"],
+                correct: 1,
+                feedback: {
+                    A: "✗ Incorrect - While related, it's specifically for representing user input from a keyboard.",
+                    B: "✓ Correct - <kbd> represents user input, typically displayed in a monospace font.",
+                    C: "✗ Incorrect - Computer code is represented by the <code> element.",
+                    D: "✗ Incorrect - Bold text is created with <strong> or <b> elements."
+                }
+            },
+            {
+                question: "Which compression type does PNG use?",
+                options: ["Lossy compression", "Lossless compression", "No compression", "Variable compression"],
+                correct: 1,
+                feedback: {
+                    A: "✗ Incorrect - Lossy compression is used by JPEG, not PNG.",
+                    B: "✓ Correct - PNG uses lossless compression, preserving all original image data.",
+                    C: "✗ Incorrect - PNG does use compression to reduce file size.",
+                    D: "✗ Incorrect - PNG consistently uses lossless compression methods."
+                }
+            },
+            {
+                question: "What is the correct way to display the ampersand character (&) in HTML?",
+                options: ["&ampersand;", "&amp;", "&#amp;", "&and;"],
+                correct: 1,
+                feedback: {
+                    A: "✗ Incorrect - &ampersand; is not a valid HTML entity name.",
+                    B: "✓ Correct - &amp; is the correct entity for the ampersand character.",
+                    C: "✗ Incorrect - This mixes named and numeric entity syntax incorrectly.",
+                    D: "✗ Incorrect - &and; is not a valid HTML entity name."
+                }
+            },
+            {
+                question: "Which element is used to create a section of a document?",
+                options: ["<div>", "<section>", "<part>", "<segment>"],
+                correct: 1,
+                feedback: {
+                    A: "✗ Incorrect - <div> is a generic container without semantic meaning.",
+                    B: "✓ Correct - <section> represents a distinct section of a document with semantic meaning.",
+                    C: "✗ Incorrect - <part> is not a valid HTML element.",
+                    D: "✗ Incorrect - <segment> is not a valid HTML element."
+                }
+            },
+            {
+                question: "What is the purpose of the title element in HTML?",
+                options: ["To create a heading on the webpage", "To specify the document's title that appears in the browser tab", "To add a tooltip to elements", "To create a page banner"],
+                correct: 1,
+                feedback: {
+                    A: "✗ Incorrect - Headings are created with <h1> through <h6> elements.",
+                    B: "✓ Correct - The <title> element sets the document title shown in browser tabs and bookmarks.",
+                    C: "✗ Incorrect - Tooltips are created with the title attribute, not the <title> element.",
+                    D: "✗ Incorrect - Page banners are typically created with <header> and other elements."
+                }
+            },
+            {
+                question: "Which HTML validation tool is commonly recommended for checking document conformance?",
+                options: ["HTML Checker", "W3C Markup Validator", "Browser Developer Tools", "HTML Lint"],
+                correct: 1,
+                feedback: {
+                    A: "✗ Incorrect - This is too generic and doesn't refer to a specific tool.",
+                    B: "✓ Correct - The W3C Markup Validator is the official tool for HTML validation.",
+                    C: "✗ Incorrect - While useful for debugging, developer tools don't provide comprehensive validation.",
+                    D: "✗ Incorrect - HTML Lint exists but isn't the commonly recommended standard tool."
+                }
+            },
+            {
+                question: "What does the <var> element represent?",
+                options: ["A variable in programming code", "A mathematical variable", "A changeable value", "All of the above"],
+                correct: 3,
+                feedback: {
+                    A: "✓ Partially correct - <var> can represent programming variables.",
+                    B: "✓ Partially correct - <var> can represent mathematical variables.",
+                    C: "✓ Partially correct - <var> represents any kind of variable or changeable value.",
+                    D: "✓ Correct - The <var> element can represent all these types of variables."
+                }
+            }
+        ];
+
+        // Quiz state variables
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let score = 0;
+
+        // Initialize quiz when page loads
+        function initializeQuiz() {
+            displayQuestion();
+            updateProgress();
+            updateButtons();
+        }
+
+        // Display current question
+        function displayQuestion() {
+            const question = allQuestions[currentQuestion];
+            
+            document.getElementById('questionNumber').textContent = `Question ${currentQuestion + 1} of ${allQuestions.length}`;
+            document.getElementById('questionText').textContent = question.question;
+            
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.textContent = `${String.fromCharCode(65 + index)}) ${option}`;
+                div.onclick = () => selectOption(index);
+                container.appendChild(div);
+            });
+            
+            document.getElementById('feedback').style.display = 'none';
+            
+            if (userAnswers[currentQuestion] !== undefined) {
+                showAnswer(userAnswers[currentQuestion]);
+            }
+        }
+
+        // Handle option selection with timing
+        function selectOption(optionIndex) {
+            if (userAnswers[currentQuestion] !== undefined) return;
+            
+            userAnswers[currentQuestion] = optionIndex;
+            
+            // First show the selected option
+            const options = document.querySelectorAll('.option');
+            options[optionIndex].classList.add('selected');
+            options.forEach(option => option.classList.add('disabled'));
+            
+            // Wait 800ms then show correct/incorrect colors and feedback
+            setTimeout(() => {
+                showAnswer(optionIndex);
+            }, 800);
+        }
+
+        // Show answer feedback with proper timing
+        function showAnswer(selectedIndex) {
+            const question = allQuestions[currentQuestion];
+            const options = document.querySelectorAll('.option');
+            const correctIndex = question.correct;
+            
+            // Remove selected class and apply correct/incorrect
+            options[selectedIndex].classList.remove('selected');
+            options[correctIndex].classList.add('correct');
+            
+            if (selectedIndex !== correctIndex) {
+                options[selectedIndex].classList.add('incorrect');
+            }
+            
+            const isCorrect = selectedIndex === correctIndex;
+            const feedback = document.getElementById('feedback');
+            feedback.className = `feedback show ${isCorrect ? 'correct' : 'incorrect'}`;
+            
+            document.getElementById('feedbackTitle').textContent = isCorrect ? '✓ Correct!' : '✗ Incorrect';
+            
+            let feedbackHtml = '';
+            ['A', 'B', 'C', 'D'].forEach(letter => {
+                if (question.feedback[letter]) {
+                    feedbackHtml += `<div class="feedback-item">${question.feedback[letter]}</div>`;
+                }
+            });
+            document.getElementById('feedbackContent').innerHTML = feedbackHtml;
+            
+            if (isCorrect) score++;
+            updateButtons();
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / allQuestions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        // Update button states
+        function updateButtons() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            prevBtn.disabled = currentQuestion === 0;
+            
+            if (currentQuestion === allQuestions.length - 1) {
+                nextBtn.textContent = 'Show Results';
+                nextBtn.disabled = userAnswers[currentQuestion] === undefined;
+            } else {
+                nextBtn.textContent = 'Next';
+                nextBtn.disabled = userAnswers[currentQuestion] === undefined;
+            }
+        }
+
+        // Navigation functions
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                displayQuestion();
+                updateProgress();
+                updateButtons();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < allQuestions.length - 1) {
+                currentQuestion++;
+                displayQuestion();
+                updateProgress();
+                updateButtons();
+            } else {
+                showResults();
+            }
+        }
+
+        // Show final results
+        function showResults() {
+            document.getElementById('questionContainer').style.display = 'none';
+            document.getElementById('controls').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+            
+            const percentage = Math.round((score / allQuestions.length) * 100);
+            document.getElementById('finalScore').textContent = `${score}/${allQuestions.length}`;
+            
+            let message = '';
+            if (percentage >= 90) {
+                message = 'Outstanding! You have excellent knowledge of HTML fundamentals.';
+            } else if (percentage >= 80) {
+                message = 'Great job! You have a solid understanding of HTML basics.';
+            } else if (percentage >= 70) {
+                message = 'Good work! You understand most HTML concepts well.';
+            } else if (percentage >= 60) {
+                message = 'Fair performance. Review HTML fundamentals to improve.';
+            } else {
+                message = 'Keep studying! Focus on HTML basics for better results.';
+            }
+            
+            document.getElementById('scoreMessage').textContent = message;
+            document.getElementById('scoreBreakdown').innerHTML = `
+                <h3>Final Results</h3>
+                <p><strong>Total Questions:</strong> ${allQuestions.length}</p>
+                <p><strong>Correct Answers:</strong> <span style="color: #28a745;">${score}</span></p>
+                <p><strong>Incorrect Answers:</strong> <span style="color: #dc3545;">${allQuestions.length - score}</span></p>
+                <p><strong>Final Score:</strong> <span style="color: #007bff; font-size: 1.2em;">${percentage}%</span></p>
+            `;
+        }
+
+        // Restart quiz
+        function restartQuiz() {
+            currentQuestion = 0;
+            userAnswers = [];
+            score = 0;
+            
+            document.getElementById('questionContainer').style.display = 'block';
+            document.getElementById('controls').style.display = 'flex';
+            document.getElementById('results').style.display = 'none';
+            
+            initializeQuiz();
+        }
+
+        // Start quiz when page loads
+        window.onload = initializeQuiz;
+    </script>
+</body>
+</html>
