@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -317,13 +318,13 @@
             },
             {
                 question: "Which of the following is NOT a required part of a minimal HTML document structure?",
-                options: ["<!DOCTYPE html> declaration", "<html> element", "<head> element", "<meta charset> element"],
-                correct: 4,
+                options: ["<!DOCTYPE html> declaration", "<html> element", "<head> element", "<meta> element"],
+                correct: 2,
                 feedback: {
                     A: "✗ Incorrect - The DOCTYPE declaration is required to instruct the browser about the document type.",
                     B: "✗ Incorrect - The <html> element is required as it encloses the entire document.",
-                    C: "✗ Incorrect - The <head> element is required as it contains metadata/information for the document",
-                    D: "✓ Correct - The <meta charset> element is not strictly required for the document to be valid and display content."
+                    C: "✓ Correct - The <head> element is optional according to HTML Living Standard, though commonly included.",
+                    D: "✗ Incorrect - The <meta charset> element is required to specify character encoding."
                 }
             },
             {
